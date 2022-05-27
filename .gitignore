@@ -1,0 +1,11 @@
+# Gauche package generated.
+/*.gpd
+/Makefile
+/VERSION
+
+# Files generated after compiled.
+*.o
+*.so
+
+# Files generated every build.
+*.log
