@@ -1,0 +1,17 @@
+;;;
+;;; gauche_text_japan_numberlib.stub
+;;;
+
+(declcode
+ (.include "gauche_text_japan_number.h"))
+
+;; The following entry is a dummy one.
+;; Replace it for your definitions.
+
+(define-cproc test-gauche_text_japan_number ()
+  (return (test_gauche_text_japan_number)))
+
+
+;; Local variables:
+;; mode: scheme
+;; end:
