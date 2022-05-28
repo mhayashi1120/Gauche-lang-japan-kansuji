@@ -7,6 +7,10 @@
    ))
 (select-module l10n.ja.number)
 
+;;;
+;;; Basics
+;;;
+
 ;; # 基本的なルール
 ;; - O 百万 X 一百万
 ;; - O 百   X 一百
@@ -352,6 +356,24 @@
              [else
               (let ([single (format "~a~a" (construct-single r1) symbol)])
                 (loop n1 rest-def (cons single res)))])))]))]))
+
+;; 大きな string から漢数字を抽出しやすくするため words を取り出す。
+;; 単語のうち文字シーケンスの最初に現われる単語のみ。
+;; 例えば "億" は現状の仕様では妥当な漢数字の先頭にくることはない。
+(define-constant valid-words
+  (append
+   (append-map
+    (match-lambda
+     [(_ _ symbols . _)
+      symbols])
+    *basics*)
+   (append-map
+    (match-lambda
+     [(_ props symbols)
+      (if (memq 'standalone props)
+        symbols
+        '())])
+    *units*)))
 
 ;;;
 ;;; API
