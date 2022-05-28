@@ -1,8 +1,8 @@
 ;;
-;; Package Gauche-text-japan-number
+;; Package Gauche-l10n-japan-number
 ;;
 
-(define-gauche-package "Gauche-text-japan-number"
+(define-gauche-package "Gauche-l10n-japan-number"
   ;;
   :version "0.1.0"
 
@@ -37,8 +37,8 @@
   :licenses ("BSD")
 
   ;; Homepage URL, if any.
-  ; :homepage "http://example.com/Gauche-text-japan-number/"
+  ; :homepage "http://example.com/Gauche-l10n-japan-number/"
 
   ;; Repository URL, e.g. github
-  ; :repository "http://example.com/Gauche-text-japan-number.git"
+  ; :repository "http://example.com/Gauche-l10n-japan-number.git"
   )

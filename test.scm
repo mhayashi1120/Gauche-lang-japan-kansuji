@@ -4,9 +4,9 @@
 
 (use gauche.test)
 
-(test-start "gauche_text_japan_number")
-(use text.japan.number)
-(test-module 'text.japan.number)
+(test-start "l10n.ja.number")
+(use l10n.ja.number)
+(test-module 'l10n.ja.number)
 
 ;; The following is a dummy test code.
 ;; Replace it for your tests.
