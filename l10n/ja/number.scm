@@ -17,7 +17,6 @@
 ;; - 現代の生活で 42.195 などを漢数字で表すことはない、はずだよね？
 ;; - O 三分二厘 X 一万三分
 ;; - 後続に単位がつく場合がある。(e.g. 百兆円) 非対応文字にあたってもエラーしないでそこで返却する。
-;; - TODO 負値は？
 ;; - 後続単位が意図せずに漢数字の単位と一致してしまった場合はどうしようもない。処理不可能。 (-> TODO 例示)
 ;; - "万" "億" といった 10^(4*n) の単位を BLOCK とする。
 ;; - 万未満の数字パーツを SINGLE とする。
@@ -42,9 +41,16 @@
 ;; ref: https://ja.wikipedia.org/wiki/%E5%91%BD%E6%95%B0%E6%B3%95
 ;; ref: https://www.benricho.org/kanji/kansuji.html
 
-(define $s $string)
+;; # TODO
+;; - 漢数字の負値について
+;; - flonum について 有理数だけにする？小数点以下の値について知識が足りないので後まわし。
+;; - "割" について。零割五分などの扱い。
 
-;; # Syntax
+;;;
+;;; # Parser
+;;;
+
+;; ## Syntax
 ;;
 ;; JNUMBER := JNUMBER0 | JNUMBER-SINGULAR | JNUMBER-PLURAL
 ;; JNUMBER0 := 漢数字(0)
@@ -75,7 +81,9 @@
 
 ;; 漢数字 := FRACTION | BLOCK | JNUMBER0
 
-;; # Definitions
+;; ## Definitions
+
+(define $s $string)
 
 ;; ## NOTE:
 ;; `singular`: 要するに 1
@@ -245,6 +253,10 @@
    ($try %fraction)
    ($try %block)
    ($try %jnumber0)))
+
+;;;
+;;; Build 
+;;;
 
 (define-constant *fixnum-block-units*
   (cons
