@@ -262,7 +262,7 @@
    %jnumber0))
 
 ;;;
-;;; Build 
+;;; Build
 ;;;
 
 (define-constant *fixnum-block-units*
@@ -341,14 +341,14 @@
     (let loop ([n N]
                [defs *fixnum-block-units*]
                [res '()])
-      (cond 
+      (cond
        [(or (null? defs)
             (zero? n))
 
         (when (and (null? defs)
                    (not (zero? n)))
           (error "Unable to convert to Kanji" N))
-          
+
         (string-join res "")]
        [else
         (match-let1 ((_ props symbol) . rest-def) defs
@@ -381,8 +381,8 @@
 (define-constant kansuji-start
   ($ regexp-compile
      $ regexp-parse
-     $ (cut string-join <> "|") $
-     map regexp-quote japanese-number-start-words))
+     $ (cut string-join <> "|")
+     $ map regexp-quote japanese-number-start-words))
 
 ;;;
 ;;; API
