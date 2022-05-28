@@ -88,6 +88,8 @@
 ;; ## Definitions
 
 (define $s $string)
+(define ($try-or . ps)
+  (apply $or (map $try ps)))
 
 ;; ## NOTE:
 ;; `singular`: 要するに 1
@@ -201,17 +203,17 @@
 (define-constant %single4-unit1 ($units/property 'allow-singular))
 (define-constant %single4-standalone-unit ($units/property 'standalone))
 (define-constant %single4
-  ($or
-   ($try ($let ([n %jnumber-plural]
-                [u %single4-unit])
-           ($return (cons (* n u) u))))
-   ($try ($let ([_ %jnumber-singular]
-                [u %single4-unit1])
-           ($return (cons u u))))
-   ($try ($let ([u %single4-standalone-unit])
-           ($return (cons u u))))
-   ($try ($let ([n %jnumber-positive])
-           ($return (cons n 1))))
+  ($try-or
+   ($let ([n %jnumber-plural]
+          [u %single4-unit])
+     ($return (cons (* n u) u)))
+   ($let ([_ %jnumber-singular]
+          [u %single4-unit1])
+     ($return (cons u u)))
+   ($let ([u %single4-standalone-unit])
+     ($return (cons u u)))
+   ($let ([n %jnumber-positive])
+     ($return (cons n 1)))
    ))
 (define-constant %single ($less-single (expt 10 4)))
 
@@ -226,12 +228,12 @@
 
 (define-constant %block4-unit ($units/property 'block4))
 (define-constant %block4
-  ($or
-   ($try ($let ([n %single]
-                [u %block4-unit])
-           ($return (cons (* n u) u))))
-   ($try ($let ([n %single])
-           ($return (cons n 1))))))
+  ($try-or
+   ($let ([n %single]
+          [u %block4-unit])
+     ($return (cons (* n u) u)))
+   ($let ([n %single])
+     ($return (cons n 1)))))
 (define-constant %block ($less-block +inf.0))
 
 (define-constant %fraction-unit ($units/property 'fraction))
@@ -253,10 +255,10 @@
 
 ;; あえて日本語 Symbol を使う。
 (define-constant %漢数字
-  ($or
-   ($try %fraction)
-   ($try %block)
-   ($try %jnumber0)))
+  ($try-or
+   %fraction
+   %block
+   %jnumber0))
 
 ;;;
 ;;; Build 
