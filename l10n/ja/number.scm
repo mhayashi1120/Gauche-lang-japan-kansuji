@@ -4,6 +4,7 @@
   (export
    parse-japanese-number parse-japanese-number-string
    construct-japanese-number construct-japanese-number-string
+   japanese-number-start
    ))
 (select-module l10n.ja.number)
 
@@ -362,7 +363,7 @@
 ;; 大きな string から漢数字を抽出しやすくするため words を取り出す。
 ;; 単語のうち文字シーケンスの最初に現われる単語のみ。
 ;; 例えば "億" は現状の仕様では妥当な漢数字の先頭にくることはない。
-(define-constant valid-words
+(define-constant japanese-number-start-words
   (append
    (append-map
     (match-lambda
@@ -376,6 +377,12 @@
         symbols
         '())])
     *units*)))
+
+(define-constant japanese-number-start
+  ($ regexp-compile
+     $ regexp-parse
+     $ (cut string-join <> "|") $
+     map regexp-quote japanese-number-start-words))
 
 ;;;
 ;;; API
