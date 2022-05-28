@@ -2,9 +2,9 @@
   (use util.match)
   (use parser.peg)
   (export
-   parse-japanese-number parse-japanese-number-string
-   construct-japanese-number construct-japanese-number-string
-   japanese-number-start
+   parse-kansuji parse-kansuji-string
+   construct-kansuji construct-kansuji-string
+   kansuji-start
    ))
 (select-module l10n.ja.kansuji)
 
@@ -378,7 +378,7 @@
         '())])
     *units*)))
 
-(define-constant japanese-number-start
+(define-constant kansuji-start
   ($ regexp-compile
      $ regexp-parse
      $ (cut string-join <> "|") $
@@ -389,10 +389,10 @@
 ;;;
 
 ;; N: number
-(define (construct-japanese-number n :optional (oport (current-output-port)))
-  (display (construct-japanese-number-string n) oport))
+(define (construct-kansuji n :optional (oport (current-output-port)))
+  (display (construct-kansuji-string n) oport))
 
-(define (construct-japanese-number-string n)
+(define (construct-kansuji-string n)
   (cond
    [(integer? n)
     (construct-fixnum-block n)]
@@ -412,13 +412,13 @@
 
 ;; japanese text might have another unit with no separator. (e.g. 百兆円)
 ;; CONT: Default CONT Parse IPORT and return number and rest input as a new port.
-(define (parse-japanese-number :optional (iport (current-input-port))
+(define (parse-kansuji :optional (iport (current-input-port))
                                (cont japanese-number-result/string))
   (peg-parse-port %漢数字 iport cont))
 
 ;; S: string
 ;; CONT: Default CONT Parse IPORT and return number and rest as a string.
-(define (parse-japanese-number-string s :optional (cont japanese-number-result/string))
-  (call-with-input-string s (cut parse-japanese-number <> cont)))
+(define (parse-kansuji-string s :optional (cont japanese-number-result/string))
+  (call-with-input-string s (cut parse-kansuji <> cont)))
 
 

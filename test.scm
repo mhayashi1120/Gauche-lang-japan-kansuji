@@ -7,6 +7,10 @@
 
 (test-start "l10n.ja.kansuji")
 
+;; TODO old one
+(use l10n.ja.number)
+(test-module 'l10n.ja.number)
+
 (use l10n.ja.kansuji)
 (test-module 'l10n.ja.kansuji)
 
