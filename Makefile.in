@@ -31,7 +31,7 @@ LOCAL_PATHS = "@LOCAL_PATHS@"
 PACKAGE   = Gauche-l10n-japan-number
 
 ARCHFILES =
-SCMFILES  = $(srcdir)/test/japan/number.scm
+SCMFILES  = $(srcdir)/l10n/ja/number.scm
 HEADERS   =
 
 TARGET    = $(ARCHFILES)

@@ -402,6 +402,7 @@
    [else
     (error "Not a supported value" n)]))
 
+;; TODO think again default return value. string construction maybe too heavy cost.
 (define (japanese-number-result/string n rest)
   (values n (rope->string rest)))
 
