@@ -102,6 +102,9 @@
 ;; ARABIC-BLOCK4 := COMMA-NUMBER4 BLOCK4-UNIT | COMMA-NUMBER4
 ;; ARABIC漢数字 := ARABIC-BLOCK4 ( LESS-ARABIC-BLOCK$ )*
 
+;; NOTE: ARABIC漢数字
+;; その他、自然な形で parse できるよう Whitespace skip も入れること。冗長になるため省略した。
+
 ;; ## Definitions
 
 (define %ws ($many_ ($. #[ \t])))
@@ -521,10 +524,9 @@
 (define (construct-kansuji n :optional (oport (current-output-port)))
   (construct-kansuji n :output-port oport))
 
-;; TODO Print behavior:
-;; - `漢数字` : default (e.g. "一兆五千六百億", "千二百三十六")
+;; TYPE: Control print behavior
+;; - `漢数字` default:  (e.g. "一兆五千六百億", "千二百三十六")
 ;; - `arabic` : (e.g. 1,000 億 100 万) 
-;; TODO add behavior by key
 (define (construct-kansuji-string n :key (type '漢数字))
   (ecase type
     [(漢数字)
