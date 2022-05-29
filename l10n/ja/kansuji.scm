@@ -50,6 +50,10 @@
 ;; - 漢数字の負値について
 ;; - flonum について 有理数だけにする？小数点以下の値について知識が足りないので後まわし。
 ;; - "割" について。零割五分などの扱い。
+;; - ref: https://www.bunka.go.jp/seisaku/bunkashingikai/kokugo/kokugo_kadai/iinkai_32/pdf/91942601_02.pdf
+;; -- > Ⅱ－４ 数字の使い方 > 兆・億・万の単位は漢字を使う
+;; -- すなわち SINGLE だけ parse する機能がほしい。
+;; -- さらに BLOCK ごとに build する機能もほしい。
 
 ;;;
 ;;; # Parser
@@ -403,22 +407,22 @@
     (error "Not a supported value" n)]))
 
 ;; TODO think again default return value. string construction maybe too heavy cost.
-(define (japanese-number-result/string n rest)
+(define (result-string-adaptor n rest)
   (values n (rope->string rest)))
 
-(define (japanese-number-result/port . args)
-  (receive (n s) (apply japanese-number-result/string args)
+(define (result-port-adaptor . args)
+  (receive (n s) (apply result-string-adaptor args)
     (values n (open-input-string s))))
 
 ;; japanese text might have another unit with no separator. (e.g. 百兆円)
 ;; CONT: Default CONT Parse IPORT and return number and rest input as a new port.
 (define (parse-kansuji :optional (iport (current-input-port))
-                               (cont japanese-number-result/string))
+                               (cont result-string-adaptor))
   (peg-parse-port %漢数字 iport cont))
 
 ;; S: string
 ;; CONT: Default CONT Parse IPORT and return number and rest as a string.
-(define (parse-kansuji-string s :optional (cont japanese-number-result/string))
+(define (parse-kansuji-string s :optional (cont result-string-adaptor))
   (call-with-input-string s (cut parse-kansuji <> cont)))
 
 

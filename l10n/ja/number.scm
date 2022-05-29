@@ -1,3 +1,7 @@
+;;;
+;;; This module is obsoleted.
+;;;
+
 (define-module l10n.ja.number
   (use l10n.ja.kansuji)
   (export
