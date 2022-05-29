@@ -1,4 +1,5 @@
 (define-module l10n.ja.kansuji
+  (use gauche.sequence)
   (use util.match)
   (use parser.peg)
   (export
@@ -69,26 +70,37 @@
 
 ;; LESS-SINGLE$ := $LESS-SINGLE(previous-unit) (less than previous-unit)
 
-;; SINGLE4-UNIT1 := 千
+;; SINGLE4-UNIT1 := "千"
 ;; SINGLE4-UNIT := SINGLE4-STANDALONE-UNIT
-;; SINGLE4-STANDALONE-UNIT := 千 | 十 | 百
+;; SINGLE4-STANDALONE-UNIT := "千" | "十 "| "百"
 ;; SINGLE4 := JNUMBER-PLURAL SINGLE4-UNIT | JNUMBER-SINGULAR SINGLE4-UNIT1 | \
 ;;         SINGLE4-STANDALONE-UNIT | JNUMBER-POSITIVE
 ;; SINGLE := SINGLE4 ( LESS-SINGLE$ )*
 
 ;; LESS-BLOCK$ := $LESS-BLOCK(previous-unit) (less than previous-unit)
 
-;; BLOCK4-UNIT := 万 | 億 | (10^4*n)...
+;; BLOCK4-UNIT := "万" | "億" | (10^4*n)...
 ;; BLOCK4 := SINGLE BLOCK4-UNIT | SINGLE
 ;; BLOCK := BLOCK4 ( LESS-BLOCK$ )*
 
 ;; LESS-FRACTION$ := $LESS-FRACTION(previous-unit) (less than previous-unit)
 
-;; FRACTION-UNIT := 分 | 厘 | 10^(-1*n)...
+;; FRACTION-UNIT := "分" | "厘" | 10^(-1*n)...
 ;; FRACTION-PART := JNUMBER FRACTION-UNIT
 ;; FRACTION := FRACTION-PART ( LESS-FRACTION$ )*
 
 ;; 漢数字 := FRACTION | BLOCK | JNUMBER0
+
+
+;; NUMBER := [0-9]
+;; NUMBER-POSITIVE := [1-9]
+;; COMMA-CHAR := ","
+
+;; LESS-ARABIC-BLOCK$ := $LESS-ARABIC-BLOCK(previous-unit) (less than previous-unit)
+
+;; COMMA-NUMBER4 := NUMBER-POSITIVE COMMA-CHAR NUMBER{3} | NUMBER{1,3}
+;; ARABIC-BLOCK4 := COMMA-NUMBER4 BLOCK4-UNIT | COMMA-NUMBER4
+;; ARABIC漢数字 := ARABIC-BLOCK4 ( LESS-ARABIC-BLOCK$ )*
 
 ;; ## Definitions
 
@@ -264,6 +276,59 @@
    %fraction
    %block
    %jnumber0))
+
+(define-constant %number ($. #[0-9]))
+(define-constant %number-positive ($. #[1-9]))
+(define-constant %comma-char ($. #\,))
+
+(define-constant %comma-number4
+  (let* ([char->int (^c (- (char->integer c) (char->integer #\0)))]
+         [chars->int (^ [cs] (apply map-with-index
+                                    (^ [c i] (* (char->int c) (expt 10 i)))
+                                    cs))])
+    ($try-or
+     ($let ([n %number-positive]
+            [_ %comma-char]
+            [ns ($many %number 3 3)])
+       ($return (chars->int (cons n ns))))
+     ($let ([ns ($many %number 1 3)])
+       ($return (chars->int (cons n ns))))
+     )))
+
+(define-constant %arabic-block4
+  ($try-or
+   ($let ([n %comma-number4]
+          [u %block4-unit])
+     ($return (cons (* n u) u)))
+   %comma-number4))
+   
+
+(define ($less-arabic nu)
+  ($let* ([n&u %arabic-block4]
+          [ns ($optional ($less-arabic (cdr n&u)) 0)])
+    (let1 r (+ (car n&u) ns)
+      (if (< (cdr n&u) nu)
+        ($return r)
+        ($raise (format "Not a valid order of arabic block ~a ~a"
+                        nu n&u))))))
+
+(define-constant %arabic-漢数字
+  ($less-arabic +inf.0))
+
+(define-constant *parser-alist*
+  `(
+    (漢数字 ,%漢数字)
+    (arabic ,%arabic-漢数字)
+    ))
+
+(define (build-paraser types)
+  (apply $try-or
+         (map
+          (^t
+           (or (and-let1 cell (assq t *parser-alist*)
+                 (cadr cell))
+               (error "Not a supported type" t)))
+          types)))
 
 ;;;
 ;;; Build
@@ -466,11 +531,16 @@
   (receive (n s) (apply result-string-adaptor args)
     (values n (open-input-string s))))
 
+(define (parse-kansuji-string*
+         iport
+         :key (cont result-string-adaptor) (types '(漢数字 arabic)))
+  (peg-parse-port (build-paraser types) iport cont))
+
 ;; japanese text might have another unit with no separator. (e.g. 百兆円)
 ;; CONT: Default CONT Parse IPORT and return number and rest input as a new port.
 (define (parse-kansuji :optional (iport (current-input-port))
                        (cont result-string-adaptor))
-  (peg-parse-port %漢数字 iport cont))
+  (parse-kansuji-string* iport :cont cont))
 
 ;; S: string
 ;; CONT: Default CONT Parse IPORT and return number and rest as a string.
