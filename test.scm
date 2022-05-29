@@ -68,6 +68,22 @@
   )
 
  (test-group
+  "Arabic 漢数字"
+  (test "0" (construct-japanese-number-string 0 :type 'arabic))
+  (test "1,234" (construct-japanese-number-string 1234 :type 'arabic))
+  (test "1,234 万" (construct-japanese-number-string 12340000 :type 'arabic))
+  (test "1,234 億 3,456" (construct-japanese-number-string 123400003456 :type 'arabic))
+  (test "1,234 兆 3,456 万" (construct-japanese-number-string 1234000034560000 :type 'arabic))
+  (test "1,234 万 5,678" (construct-japanese-number-string 12345678 :type 'arabic))
+  (test "12 億 3,456 万 7,890" (construct-japanese-number-string 1234567890 :type 'arabic))
+  (test "8,765 万 4,321" (construct-japanese-number-string 87654321 :type 'arabic))
+  (test "765 万 4,321" (construct-japanese-number-string 7654321 :type 'arabic))
+  (test "65 万 4,321" (construct-japanese-number-string 654321 :type 'arabic))
+  (test "9 億 8,765 万 4,321" (construct-japanese-number-string 987654321 :type 'arabic))
+  (test "8,130 無量大数 238 不可思議 3,487 那由他 1,838 阿僧祇 3,838 恒河沙 2,913 極 304 載 3,459 正 4,394 澗 3,908 溝 390 穣 4,820 𥝱 3,498 垓 2,094 京 8,290 兆 3,433 億 4,901 万 3,184" (construct-japanese-number-string 813002383487183838382913030434594394390803904820349820948290343349013184 :type 'arabic))
+  )
+
+ (test-group
   "Inverse 漢数字"
   (inverse=? 0)
   (inverse=? 1)

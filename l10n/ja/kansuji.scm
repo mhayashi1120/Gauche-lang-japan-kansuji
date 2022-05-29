@@ -3,7 +3,7 @@
   (use parser.peg)
   (export
    parse-kansuji parse-kansuji-string
-   construct-kansuji construct-kansuji-string
+   construct-kansuji* construct-kansuji construct-kansuji-string
    kansuji-start
    ))
 (select-module l10n.ja.kansuji)
@@ -301,6 +301,53 @@
       symbol])
     *basics*)))
 
+(define (textify-kansuji n)
+  (cond
+   [(integer? n)
+    (construct-fixnum-block n)]
+   [(flonum? n)
+    ;; TODO make error when 42.195 like number.
+    ;; TODO 1/10 ratnum?
+    ;; (rational? 10.1)
+    (construct-flonum-block n)]
+   [else
+    (error "Not a supported value" n)]))
+
+;; 0 <= n < 10000
+;; (e.g. "1,234" "5,432" "543")
+(define (format-single n)
+  (format "~,,',:d" n))
+
+;; (e.g. "1,345 京" "1,234 兆" "9,875" )
+(define (textify-arabic-block-kansuji n)
+  (cond
+   [(negative? n)
+    (error "TODO Unable convert negative value")]
+   [(zero? n)
+    "0"]
+   [else
+    (let loop ([units *fixnum-block-units*]
+               [n n]
+               [res '()])
+      (cond
+       [(zero? n)
+        (string-join res " ")]
+       [else
+        (match units
+          [((base _ symbol) . rests)
+           (receive (next value) (div-and-mod n 10000)
+                    (cond
+                     [(zero? value)
+                      (loop rests next res)]
+                     [else
+                      (let* ([single-text (format-single value)]
+                             [block-text (if (string=? symbol "")
+                                           single-text
+                                           (format "~a ~a" single-text symbol))])
+                        (loop rests next (cons block-text res)))]))]
+          [()
+           (error "TODO overflow")])]))]))
+
 ;; TODO
 (define (construct-flonum-block n)
   (error "not yet supported"))
@@ -393,18 +440,23 @@
 ;;;
 
 ;; N: number
-(define (construct-kansuji n :optional (oport (current-output-port)))
-  (display (construct-kansuji-string n) oport))
+(define (construct-kansuji* n :key (output-port (current-output-port)) :allow-other-keys _keys)
+  (display (apply construct-kansuji-string n _keys) output-port))
 
-(define (construct-kansuji-string n)
-  (cond
-   [(integer? n)
-    (construct-fixnum-block n)]
-   [(flonum? n)
-    ;; TODO make error when 42.195 like number.
-    (construct-flonum-block n)]
-   [else
-    (error "Not a supported value" n)]))
+;; N: number
+(define (construct-kansuji n :optional (oport (current-output-port)))
+  (construct-kansuji n :output-port oport))
+
+;; TODO Print behavior:
+;; - `漢数字` : default (e.g. "一兆五千六百億", "千二百三十六")
+;; - `arabic` : (e.g. 1,000 億 100 万) 
+;; TODO add behavior by key
+(define (construct-kansuji-string n :key (type '漢数字))
+  (ecase type
+    [(漢数字)
+     (textify-kansuji n)]
+    [(arabic)
+     (textify-arabic-block-kansuji n)]))
 
 ;; TODO think again default return value. string construction maybe too heavy cost.
 (define (result-string-adaptor n rest)
@@ -417,7 +469,7 @@
 ;; japanese text might have another unit with no separator. (e.g. 百兆円)
 ;; CONT: Default CONT Parse IPORT and return number and rest input as a new port.
 (define (parse-kansuji :optional (iport (current-input-port))
-                               (cont result-string-adaptor))
+                       (cont result-string-adaptor))
   (peg-parse-port %漢数字 iport cont))
 
 ;; S: string
