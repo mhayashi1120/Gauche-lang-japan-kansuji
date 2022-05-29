@@ -104,6 +104,7 @@
 
 ;; ## Definitions
 
+(define %ws ($many_ ($. #[ \t])))
 (define $s $string)
 (define ($try-or . ps)
   (apply $or (map $try ps)))
@@ -283,29 +284,37 @@
 
 (define-constant %comma-number4
   (let* ([char->int (^c (- (char->integer c) (char->integer #\0)))]
-         [chars->int (^ [cs] (apply map-with-index
-                                    (^ [c i] (* (char->int c) (expt 10 i)))
-                                    cs))])
+         [chars->int (^ [cs] (apply +
+                                    (map-with-index
+                                     (^ [i c] (* (char->int c) (expt 10 i)))
+                                     (reverse cs))))])
     ($try-or
-     ($let ([n %number-positive]
-            [_ %comma-char]
-            [ns ($many %number 3 3)])
+     ($let* ([n %number-positive]
+             [_ %comma-char]
+             [ns ($many %number 3 3)])
        ($return (chars->int (cons n ns))))
      ($let ([ns ($many %number 1 3)])
-       ($return (chars->int (cons n ns))))
+       ($return (chars->int ns)))
      )))
 
 (define-constant %arabic-block4
   ($try-or
-   ($let ([n %comma-number4]
-          [u %block4-unit])
+   ($let* ([n %comma-number4]
+           %ws
+           [u %block4-unit]
+           %ws
+           )
      ($return (cons (* n u) u)))
-   %comma-number4))
+   ($let ([n %comma-number4])
+     ($return (cons n 1)))))
    
 
 (define ($less-arabic nu)
   ($let* ([n&u %arabic-block4]
-          [ns ($optional ($less-arabic (cdr n&u)) 0)])
+          %ws
+          [ns ($optional ($less-arabic (cdr n&u)) 0)]
+          %ws
+          )
     (let1 r (+ (car n&u) ns)
       (if (< (cdr n&u) nu)
         ($return r)

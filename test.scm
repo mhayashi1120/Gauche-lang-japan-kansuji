@@ -68,7 +68,30 @@
   )
 
  (test-group
-  "Arabic 漢数字"
+  "Inverse 漢数字"
+  (inverse=? 0)
+  (inverse=? 1)
+  (inverse=? 12345678901230)
+  (inverse=? 1234567890123)
+  (inverse=? 876543210)
+  (inverse=? 87654321054321)
+  )
+
+ (parse-japanese-number-string "1,234")
+ (test-group
+  "parse Arabic 漢数字"
+  (test 0 (parse-japanese-number-string "0"))
+  (test 5678 (parse-japanese-number-string "5,678"))
+  (test 1234 (parse-japanese-number-string "1,234"))
+  (test 12340000 (parse-japanese-number-string "1,234万"))
+  (test 12340000 (parse-japanese-number-string "1,234 万"))
+  (test 567812340321 (parse-japanese-number-string "5,678 億1,234 万 321"))
+  (test 567812340321 (parse-japanese-number-string "5,678億1,234万321"))
+  (test 567812340321 (parse-japanese-number-string "5,678 億 1,234 万 321"))
+  )
+
+ (test-group
+  "Construct Arabic 漢数字"
   (test "0" (construct-japanese-number-string 0 :type 'arabic))
   (test "1,234" (construct-japanese-number-string 1234 :type 'arabic))
   (test "1,234 万" (construct-japanese-number-string 12340000 :type 'arabic))
@@ -83,15 +106,6 @@
   (test "8,130 無量大数 238 不可思議 3,487 那由他 1,838 阿僧祇 3,838 恒河沙 2,913 極 304 載 3,459 正 4,394 澗 3,908 溝 390 穣 4,820 𥝱 3,498 垓 2,094 京 8,290 兆 3,433 億 4,901 万 3,184" (construct-japanese-number-string 813002383487183838382913030434594394390803904820349820948290343349013184 :type 'arabic))
   )
 
- (test-group
-  "Inverse 漢数字"
-  (inverse=? 0)
-  (inverse=? 1)
-  (inverse=? 12345678901230)
-  (inverse=? 1234567890123)
-  (inverse=? 876543210)
-  (inverse=? 87654321054321)
-  )
 
  ;; TODO
  ;; - overflow test
