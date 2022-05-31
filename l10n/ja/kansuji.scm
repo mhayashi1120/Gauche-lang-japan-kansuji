@@ -3,7 +3,7 @@
   (use util.match)
   (use parser.peg)
   (export
-   parse-kansuji parse-kansuji-string
+   parse-kansuji-string* parse-kansuji parse-kansuji-string
    construct-kansuji* construct-kansuji construct-kansuji-string
    kansuji-start
    ))
@@ -487,28 +487,20 @@
     [(arabic)
      (textify-arabic-block-kansuji n)]))
 
-;; TODO think again default return value. string construction maybe too heavy cost.
-(define (result-string-adaptor n rest)
-  (values n (rope->string rest)))
-
-(define (result-port-adaptor . args)
-  (receive (n s) (apply result-string-adaptor args)
-    (values n (open-input-string s))))
-
 (define (parse-kansuji-string*
          iport
-         :key (cont result-string-adaptor) (types '(漢数字 arabic)))
+         :key (cont #f) (types '(漢数字 arabic)))
   (peg-parse-port (build-paraser types) iport cont))
 
 ;; japanese text might have another unit with no separator. (e.g. 百兆円)
 ;; CONT: Default CONT Parse IPORT and return number and rest input as a new port.
 (define (parse-kansuji :optional (iport (current-input-port))
-                       (cont result-string-adaptor))
+                       (cont #f))
   (parse-kansuji-string* iport :cont cont))
 
 ;; S: string
 ;; CONT: Default CONT Parse IPORT and return number and rest as a string.
-(define (parse-kansuji-string s :optional (cont result-string-adaptor))
+(define (parse-kansuji-string s :optional (cont #f))
   (call-with-input-string s (cut parse-kansuji <> cont)))
 
 
