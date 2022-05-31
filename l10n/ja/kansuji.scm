@@ -178,16 +178,16 @@
 (define-constant %single4-standalone-unit ($units/property 'standalone))
 (define-constant %single4
   ($try-or
-   ($let ([n %jnumber-plural]
-          [u %single4-unit])
-     ($return (cons (* n u) u)))
-   ($let ([_ %jnumber-singular]
-          [u %single4-unit1])
-     ($return (cons u u)))
-   ($let ([u %single4-standalone-unit])
-     ($return (cons u u)))
-   ($let ([n %jnumber-positive])
-     ($return (cons n 1)))
+   ($lift (^ [n u] (cons (* n u) u))
+          %jnumber-plural
+          %single4-unit)
+   ($lift (^ [_ u] (cons u u))
+          %jnumber-singular
+          %single4-unit1)
+   ($lift (^u (cons u u))
+          %single4-standalone-unit)
+   ($lift (^n (cons n 1))
+          %jnumber-positive)
    ))
 (define-constant %single ($less-single (expt 10 4)))
 
@@ -203,18 +203,18 @@
 (define-constant %block4-unit ($units/property 'block4))
 (define-constant %block4
   ($try-or
-   ($let ([n %single]
-          [u %block4-unit])
-     ($return (cons (* n u) u)))
-   ($let ([n %single])
-     ($return (cons n 1)))))
+   ($lift (^ [n u]  (cons (* n u) u))
+          %single
+          %block4-unit)
+   ($lift (^n (cons n 1))
+          %single)))
 (define-constant %block ($less-block +inf.0))
 
 (define-constant %fraction-unit ($units/property 'fraction))
 (define-constant %fraction-part
-  ($let ([n %jnumber]
-         [u %fraction-unit])
-    ($return (cons (* n u) u))))
+  ($lift (^ [n u] (cons (* n u) u))
+         %jnumber
+         %fraction-unit))
 
 (define ($less-fraction fu)
   ($let* ([n&u %fraction-part]
@@ -249,8 +249,8 @@
              [_ %comma-char]
              [ns ($many %number 3 3)])
        ($return (chars->int (cons n ns))))
-     ($let ([ns ($many %number 1 3)])
-       ($return (chars->int ns)))
+     ($lift (^ [ns] (chars->int ns))
+            ($many %number 1 3))
      )))
 
 (define-constant %arabic-block4
@@ -261,8 +261,8 @@
            %ws
            )
      ($return (cons (* n u) u)))
-   ($let ([n %comma-number4])
-     ($return (cons n 1)))))
+   ($lift (^n (cons n 1))
+          %comma-number4)))
    
 
 (define ($less-arabic nu)
