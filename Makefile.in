@@ -28,7 +28,7 @@ EXEEXT = @EXEEXT@
 LOCAL_PATHS = "@LOCAL_PATHS@"
 
 # Module-specific stuff
-PACKAGE   = Gauche-l10n-japan-number
+PACKAGE   = Gauche-l10n-japan-kansuji
 
 ARCHFILES =
 SCMFILES  = $(srcdir)/l10n/ja/*.scm

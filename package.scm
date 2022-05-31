@@ -1,10 +1,10 @@
 ;;
-;; Package Gauche-l10n-japan-number
+;; Package Gauche-l10n-japan-kansuji
 ;;
 
-(define-gauche-package "Gauche-l10n-japan-number"
+(define-gauche-package "Gauche-l10n-japan-kansuji"
   ;;
-  :version "0.1.0"
+  :version "0.5.0"
 
   ;; Description of the package.  The first line is used as a short
   ;; summary.
@@ -37,8 +37,8 @@
   :licenses ("BSD")
 
   ;; Homepage URL, if any.
-  ; :homepage "http://example.com/Gauche-l10n-japan-number/"
+  ; :homepage "http://example.com/Gauche-l10n-japan-kansuji/"
 
   ;; Repository URL, e.g. github
-  ; :repository "http://example.com/Gauche-l10n-japan-number.git"
+  ; :repository "http://example.com/Gauche-l10n-japan-kansuji.git"
   )
