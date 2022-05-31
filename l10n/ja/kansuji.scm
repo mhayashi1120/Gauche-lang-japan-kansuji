@@ -245,25 +245,21 @@
                                      (^ [i c] (* (char->int c) (expt 10 i)))
                                      (reverse cs))))])
     ($try-or
-     ($let* ([n %number-positive]
-             [_ %comma-char]
-             [ns ($many %number 3 3)])
-       ($return (chars->int (cons n ns))))
+     ($lift (^ [n ns] (chars->int (cons n ns)))
+            ($seq0 %number-positive %comma-char)
+            ($many %number 3 3))
      ($lift (^ [ns] (chars->int ns))
             ($many %number 1 3))
      )))
 
 (define-constant %arabic-block4
   ($try-or
-   ($let* ([n %comma-number4]
-           %ws
-           [u %block4-unit]
-           %ws
-           )
-     ($return (cons (* n u) u)))
+   ($lift (^ [n u] (cons (* n u) u))
+          ($seq0 %comma-number4 %ws)
+          ($seq0 %block4-unit %ws)
+          )
    ($lift (^n (cons n 1))
           %comma-number4)))
-   
 
 (define ($less-arabic nu)
   ($let* ([n&u %arabic-block4]
