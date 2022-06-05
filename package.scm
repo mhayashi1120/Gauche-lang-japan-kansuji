@@ -4,7 +4,7 @@
 
 (define-gauche-package "Gauche-l10n-japan-kansuji"
   ;;
-  :version "0.5.3"
+  :version "0.5.4"
 
   ;; Description of the package.  The first line is used as a short
   ;; summary.
@@ -20,7 +20,7 @@
   ;; NB: This will be recognized >= Gauche 0.9.7.
   ;; Example:
   ;;      :providing-modules (util.algorithm1 util.algorithm1.option)
-  :providing-modules (text.japan.number)
+  :providing-modules (l10n.ja.kansuji)
 
   ;; List name and contact info of authors.
   ;; e.g. ("Eva Lu Ator <eval@example.com>"

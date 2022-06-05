@@ -1,6 +1,6 @@
 # Gauche-l10n-japan-kansuji
 
-数字と日本語圏の漢数字に変換します。
+数値と日本語圏の漢数字表記を相互変換します。
 
 0 <=> "零"
 71256543 <=> "七千百二十五万六千五百四十三"
@@ -73,6 +73,6 @@ ref: https://www.bunka.go.jp/seisaku/bunkashingikai/kokugo/kokugo_kadai/iinkai_3
 - 漢数字の負値について
 - flonum について 有理数だけにする？小数点以下の値について知識が足りないので後まわし。
 - "割" について。零割五分などの扱い。
-
+- Improve この README
 
 
