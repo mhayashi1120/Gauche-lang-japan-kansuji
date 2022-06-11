@@ -1,10 +1,10 @@
 ;;
-;; Package Gauche-l10n-japan-kansuji
+;; Package Gauche-lang-japan-kansuji
 ;;
 
-(define-gauche-package "Gauche-l10n-japan-kansuji"
+(define-gauche-package "Gauche-lang-japan-kansuji"
   ;;
-  :version "0.5.4"
+  :version "0.5.5"
 
   ;; Description of the package.  The first line is used as a short
   ;; summary.
@@ -20,7 +20,7 @@
   ;; NB: This will be recognized >= Gauche 0.9.7.
   ;; Example:
   ;;      :providing-modules (util.algorithm1 util.algorithm1.option)
-  :providing-modules (l10n.ja.kansuji)
+  :providing-modules (lang.ja.kansuji)
 
   ;; List name and contact info of authors.
   ;; e.g. ("Eva Lu Ator <eval@example.com>"
@@ -37,8 +37,8 @@
   :licenses ("BSD")
 
   ;; Homepage URL, if any.
-  ; :homepage "http://example.com/Gauche-l10n-japan-kansuji/"
+  ; :homepage "http://example.com/Gauche-lang-japan-kansuji/"
 
   ;; Repository URL, e.g. github
-  ; :repository "http://example.com/Gauche-l10n-japan-kansuji.git"
+  ; :repository "http://example.com/Gauche-lang-japan-kansuji.git"
   )

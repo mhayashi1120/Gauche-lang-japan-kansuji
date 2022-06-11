@@ -28,10 +28,10 @@ EXEEXT = @EXEEXT@
 LOCAL_PATHS = "@LOCAL_PATHS@"
 
 # Module-specific stuff
-PACKAGE   = Gauche-l10n-japan-kansuji
+PACKAGE   = Gauche-lang-japan-kansuji
 
 ARCHFILES =
-SCMFILES  = $(srcdir)/l10n/ja/*.scm
+SCMFILES  = $(srcdir)/lang/ja/*.scm
 HEADERS   =
 
 TARGET    = $(ARCHFILES)
@@ -43,8 +43,8 @@ GAUCHE_PKGINCDIR  = "$(DESTDIR)@GAUCHE_PKGINCDIR@"
 GAUCHE_PKGLIBDIR  = "$(DESTDIR)@GAUCHE_PKGLIBDIR@"
 GAUCHE_PKGARCHDIR = "$(DESTDIR)@GAUCHE_PKGARCHDIR@"
 
-gauche_l10n_japan_number_SRCS = 
-gauche_l10n_japan_number_HDRS =
+gauche_lang_japan_number_SRCS = 
+gauche_lang_japan_number_HDRS =
 
 all : $(TARGET)
 
@@ -65,7 +65,7 @@ uninstall :
 	$(INSTALL) -U $(GAUCHE_PKGLIBDIR)/.packages $(PACKAGE).gpd
 
 clean :
-	$(GAUCHE_PACKAGE) compile --clean gauche_l10n_japan_number $(gauche_l10n_japan_number_SRCS)
+	$(GAUCHE_PACKAGE) compile --clean gauche_lang_japan_number $(gauche_lang_japan_number_SRCS)
 	rm -rf core $(TARGET) $(CLEANFILES) *~ test.log so_locations
 
 distclean : clean

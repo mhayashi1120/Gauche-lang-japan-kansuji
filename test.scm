@@ -5,10 +5,10 @@
 (use gauche.test)
 (use compat.chibi-test)
 
-(test-start "l10n.ja.kansuji")
+(test-start "lang.ja.kansuji")
 
-(use l10n.ja.kansuji)
-(test-module 'l10n.ja.kansuji)
+(use lang.ja.kansuji)
+(test-module 'lang.ja.kansuji)
 
 (define (inverse=? n)
   (let1 text (construct-kansuji-string n)

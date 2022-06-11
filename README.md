@@ -1,4 +1,4 @@
-# Gauche-l10n-japan-kansuji
+# Gauche-lang-japan-kansuji
 
 数値と日本語圏の漢数字表記を相互変換します。
 

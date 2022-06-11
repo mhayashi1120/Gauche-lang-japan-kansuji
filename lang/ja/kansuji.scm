@@ -1,4 +1,4 @@
-(define-module l10n.ja.kansuji
+(define-module lang.ja.kansuji
   (use gauche.sequence)
   (use util.match)
   (use parser.peg)
@@ -7,7 +7,7 @@
    construct-kansuji* construct-kansuji construct-kansuji-string
    kansuji-start
    ))
-(select-module l10n.ja.kansuji)
+(select-module lang.ja.kansuji)
 
 ;;;
 ;;; # Parser

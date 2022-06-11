@@ -1,5 +1,5 @@
 #!/usr/bin/env gosh
-;; Configuring Gauche-l10n-japan-kansuji
+;; Configuring Gauche-lang-japan-kansuji
 ;; Run ./configure (or gosh ./configure) to generate Makefiles.
 
 (use gauche.configure)
