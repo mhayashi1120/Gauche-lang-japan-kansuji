@@ -29,36 +29,35 @@
 ;; SINGLE4 := JNUMBER-PLURAL SINGLE4-UNIT | JNUMBER-SINGULAR SINGLE4-UNIT1 | \
 ;;         SINGLE4-STANDALONE-UNIT | JNUMBER-POSITIVE
 ;; SINGLE := SINGLE4 ( LESS-SINGLE$ )*
-
+;;
 ;; LESS-BLOCK$ := $LESS-BLOCK(previous-unit) (less than previous-unit)
-
+;;
 ;; BLOCK4-UNIT := "万" | "億" | (10^4*n)...
 ;; BLOCK4 := SINGLE BLOCK4-UNIT | SINGLE
 ;; BLOCK := BLOCK4 ( LESS-BLOCK$ )*
-
+;;
 ;; LESS-FRACTION$ := $LESS-FRACTION(previous-unit) (less than previous-unit)
-
+;;
 ;; FRACTION-UNIT := "分" | "厘" | 10^(-1*n)...
 ;; FRACTION-PART := JNUMBER FRACTION-UNIT
 ;; FRACTION := FRACTION-PART ( LESS-FRACTION$ )*
-
+;;
 ;; 漢数字 := FRACTION | BLOCK | JNUMBER0
-
-
+;;
 ;; NUMBER := [0-9]
 ;; NUMBER-POSITIVE := [1-9]
 ;; COMMA-CHAR := ","
-
+;;
 ;; LESS-ARABIC-BLOCK$ := $LESS-ARABIC-BLOCK(previous-unit) (less than previous-unit)
-
+;;
 ;; COMMA-NUMBER4 := NUMBER-POSITIVE COMMA-CHAR NUMBER{3} | NUMBER{1,3}
 ;; ARABIC-BLOCK4 := COMMA-NUMBER4 BLOCK4-UNIT | COMMA-NUMBER4
 ;; ARABIC漢数字 := ARABIC-BLOCK4 ( LESS-ARABIC-BLOCK$ )*
-
+;;
 ;; NOTE: ARABIC漢数字
 ;; その他、自然な形で parse できるよう Whitespace skip も入れること。冗長になるため省略した。
 
-;; ## Definitions
+;; ## Parser definitions
 
 (define %ws ($many_ ($. #[ \t])))
 (define $s $string)
@@ -462,20 +461,26 @@
      $ map regexp-quote japanese-number-start-words))
 
 ;;;
-;;; API
+;;; # API
 ;;;
 
-;; N: number
+;; ##
+;; - N: number
+;; -> <void>
 (define (construct-kansuji* n :key (output-port (current-output-port)) :allow-other-keys _keys)
   (display (apply construct-kansuji-string n _keys) output-port))
 
-;; N: number
+;; ##
+;; - N: number
+;; -> <string>
 (define (construct-kansuji n :optional (oport (current-output-port)))
   (construct-kansuji n :output-port oport))
 
-;; TYPE: Control print behavior
-;; - `漢数字` default:  (e.g. "一兆五千六百億", "千二百三十六")
-;; - `arabic` : (e.g. 1,000 億 100 万) 
+;; ##
+;; - N : <number>
+;; - TYPE : <symbol> Control printing behavior
+;;    - `漢数字` default:  (e.g. "一兆五千六百億", "千二百三十六")
+;;    - `arabic` : (e.g. 1,000 億 100 万) 
 (define (construct-kansuji-string n :key (type '漢数字))
   (ecase type
     [(漢数字)
@@ -483,19 +488,24 @@
     [(arabic)
      (textify-arabic-block-kansuji n)]))
 
+;; ##
+;; -> <number>
 (define (parse-kansuji-string*
          iport
          :key (cont #f) (types '(漢数字 arabic)))
   (peg-parse-port (build-paraser types) iport cont))
 
-;; japanese text might have another unit with no separator. (e.g. 百兆円)
-;; CONT: Default CONT Parse IPORT and return number and rest input as a new port.
+;; ##
+;; 漢数字は空白セパレータなしで単位が後続する場合がある。 (e.g. 百兆円)
+;; 故にデフォルトの挙動は後続の文字を単に無視する。厳格に制御したいときは CONT を使うこと。
+;; - CONT : `peg-parse-port` にそのまま渡される。
 (define (parse-kansuji :optional (iport (current-input-port))
                        (cont #f))
   (parse-kansuji-string* iport :cont cont))
 
-;; S: string
-;; CONT: Default CONT Parse IPORT and return number and rest as a string.
+;; ##
+;; - S: <string>
+;; - CONT : `peg-parse-port` にそのまま渡される。
 (define (parse-kansuji-string s :optional (cont #f))
   (call-with-input-string s (cut parse-kansuji <> cont)))
 
