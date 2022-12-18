@@ -20,9 +20,9 @@
 ;; JNUMBER-SINGULAR := 漢数字(1)
 ;; JNUMBER-POSITIVE := 漢数字(1-9)
 ;; JNUMBER-PLURAL := 漢数字(2-9)
-
+;;
 ;; LESS-SINGLE$ := $LESS-SINGLE(previous-unit) (less than previous-unit)
-
+;;
 ;; SINGLE4-UNIT1 := "千"
 ;; SINGLE4-UNIT := SINGLE4-STANDALONE-UNIT
 ;; SINGLE4-STANDALONE-UNIT := "千" | "十 "| "百"
