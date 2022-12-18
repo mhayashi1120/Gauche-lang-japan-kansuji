@@ -454,6 +454,8 @@
         '())])
     *units*)))
 
+;; ## 文字列中にある漢数字と思われる文字の開始位置を検索するための正規表現
+;; <regexp>
 (define-constant kansuji-start
   ($ regexp-compile
      $ regexp-parse
