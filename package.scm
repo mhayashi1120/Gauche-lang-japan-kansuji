@@ -4,7 +4,7 @@
 
 (define-gauche-package "Gauche-lang-japan-kansuji"
   ;;
-  :version "0.5.7"
+  :version "0.5.8"
 
   ;; Description of the package.  The first line is used as a short
   ;; summary.
