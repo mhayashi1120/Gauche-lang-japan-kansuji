@@ -48,10 +48,6 @@ ref: https://ja.wikipedia.org/wiki/%E5%88%86_(%E6%95%B0)#.E3.81.9D.E3.81.AE.E4.B
 
 > 「七分咲き」、「五分五分」、「九分九厘」、「腹八分（腹八分目）」、「盗人にも三分の理」、「七分袖」
 
-ほんとだ… 驚きすぎてしばらく頭に入ってこなかった。
-
--> つまり… 「分」は **「割」** に後続する場合のみ 1/100 にする、とか。打率の低い (1 割未満) バッターとかは…？ 零割五分、とか？
-
 ## Note:
 
 ref: https://ja.wikipedia.org/wiki/%E5%91%BD%E6%95%B0%E6%B3%95
@@ -62,12 +58,3 @@ ref: https://www.benricho.org/kanji/kansuji.html
 ref: https://www.bunka.go.jp/seisaku/bunkashingikai/kokugo/kokugo_kadai/iinkai_32/pdf/91942601_02.pdf
 
 > Ⅱ－４ 数字の使い方 > 兆・億・万の単位は漢字を使う
-
-# TODO
-
-- 漢数字の負値について
-- flonum について 有理数だけにする？小数点以下の値について知識が足りないので後まわし。
-- "割" について。零割五分などの扱い。
-- Improve この README
-
-
