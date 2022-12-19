@@ -37,8 +37,8 @@
   :licenses ("BSD")
 
   ;; Homepage URL, if any.
-  ; :homepage "http://example.com/Gauche-lang-japan-kansuji/"
+  :homepage "https://github.com/mhayashi1120/Gauche-lang-japan-kansuji"
 
   ;; Repository URL, e.g. github
-  ; :repository "http://example.com/Gauche-lang-japan-kansuji.git"
+  :repository "git@github.com:mhayashi1120/Gauche-lang-japan-kansuji.git"
   )
