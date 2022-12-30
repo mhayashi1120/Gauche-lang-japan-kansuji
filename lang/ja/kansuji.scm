@@ -331,9 +331,6 @@
    [(integer? n)
     (construct-fixnum-block n)]
    [(flonum? n)
-    ;; TODO make error when 42.195 like number.
-    ;; TODO 1/10 ratnum?
-    ;; (rational? 10.1)
     (construct-flonum-block n)]
    [else
     (error "Not a supported value" n)]))
@@ -347,7 +344,7 @@
 (define (textify-arabic-block-kansuji n)
   (cond
    [(negative? n)
-    (error "TODO Unable convert negative value")]
+    (error "Unable convert negative value")]
    [(zero? n)
     "0"]
    [else
@@ -371,7 +368,7 @@
                                            (format "~a ~a" single-text symbol))])
                         (loop rests next (cons block-text res)))]))]
           [()
-           (error "TODO overflow")])]))]))
+           (error "overflow" units)])]))]))
 
 ;; TODO
 (define (construct-flonum-block n)
