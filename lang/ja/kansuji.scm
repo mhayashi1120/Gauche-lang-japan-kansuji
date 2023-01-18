@@ -479,7 +479,7 @@
 ;; - N : <number>
 ;; - TYPE : <symbol> Control printing behavior
 ;;    - `漢数字` default:  (e.g. "一兆五千六百億", "千二百三十六")
-;;    - `arabic` : (e.g. 1,000 億 100 万) 
+;;    - `arabic` : (e.g. 1,000 億 100 万)
 (define (construct-kansuji-string n :key (type '漢数字))
   (ecase type
     [(漢数字)
@@ -507,5 +507,3 @@
 ;; - CONT : `peg-parse-port` にそのまま渡される。
 (define (parse-kansuji-string s :optional (cont #f))
   (call-with-input-string s (cut parse-kansuji <> cont)))
-
-
