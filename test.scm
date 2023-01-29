@@ -105,12 +105,17 @@
  (test-group
   "Overflow test"
   (let1 max-value (string->number (make-string 72 #\9))
-    ;; Just pass 
+    ;; Just pass
     (test #t (boolean (construct-kansuji-string max-value)))
     ;; overflow
     (test-error (construct-kansuji-string (+ max-value 1)))
     )
   )
+
+ (test-group ""
+   (test "二千三百" (with-output-to-string (cut construct-kansuji 2300)))
+   (test "二千三百" (with-output-to-string (cut construct-kansuji* 2300))))
+
  ;; TODO
  ;; - invalid input test
 

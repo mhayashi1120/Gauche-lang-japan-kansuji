@@ -473,7 +473,7 @@
 ;; - N: number
 ;; -> <string>
 (define (construct-kansuji n :optional (oport (current-output-port)))
-  (construct-kansuji n :output-port oport))
+  (construct-kansuji* n :output-port oport))
 
 ;; ##
 ;; - N : <number>
