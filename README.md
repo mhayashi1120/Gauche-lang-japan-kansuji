@@ -1,5 +1,7 @@
 # Gauche-lang-japan-kansuji
 
+[![CI](https://github.com/mhayashi1120/Gauche-lang-japan-kansuji/actions/workflows/build.yml/badge.svg)](https://github.com/mhayashi1120/Gauche-lang-japan-kansuji/actions/workflows/build.yml)
+
 数値と日本語圏の漢数字表記を相互変換します。
 
 - 0 <=> "零"
