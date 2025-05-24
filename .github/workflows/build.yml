@@ -2,7 +2,7 @@ name: CI
 
 on:
   schedule:
-    - cron: '18 7 * * 3'
+    - cron: '18 7 18 * *'
   pull_request:
   push:
     paths-ignore:
@@ -18,7 +18,7 @@ jobs:
     container:
       image: practicalscheme/gauche
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup package
         run: |
       - name: CI
