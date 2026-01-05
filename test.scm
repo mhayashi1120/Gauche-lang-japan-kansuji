@@ -82,10 +82,16 @@
  (test-group
   "parse Arabic 漢数字"
   (test 0 (parse-kansuji-string "0"))
+  (test 567 (parse-kansuji-string "567"))
   (test 5678 (parse-kansuji-string "5,678"))
+  (test 5678 (parse-kansuji-string "5678"))
   (test 1234 (parse-kansuji-string "1,234"))
   (test 12340000 (parse-kansuji-string "1,234万"))
+  (test 12340000 (parse-kansuji-string "1234万"))
+  (test 12340000 (parse-kansuji-string "1234 万"))
   (test 12340000 (parse-kansuji-string "1,234 万"))
+  (test 12334560000 (parse-kansuji-string "123億3456万"))
+  (test 123434560000 (parse-kansuji-string "1234億3456万"))
   (test 567812340321 (parse-kansuji-string "5,678 億1,234 万 321"))
   (test 567812340321 (parse-kansuji-string "5,678億1,234万321"))
   (test 567812340321 (parse-kansuji-string "5,678 億 1,234 万 321"))

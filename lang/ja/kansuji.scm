@@ -50,16 +50,25 @@
 ;;
 ;; LESS-ARABIC-BLOCK$ := $LESS-ARABIC-BLOCK(previous-unit) (less than previous-unit)
 ;;
+;; NUMBER4! := NUMBER-POSITIVE NUMBER{3}
 ;; COMMA-NUMBER4 := NUMBER-POSITIVE COMMA-CHAR NUMBER{3} | NUMBER{1,3}
-;; ARABIC-BLOCK4 := COMMA-NUMBER4 BLOCK4-UNIT | COMMA-NUMBER4
+;; NUMBER4*  := NUMBER4! | COMMA-NUMBER4
+;; ARABIC-BLOCK4 := NUMBER4* BLOCK4-UNIT | NUMBER4*
 ;; ARABIC漢数字 := ARABIC-BLOCK4 ( LESS-ARABIC-BLOCK$ )*
+;;
+;; ### About `NUMBER4!`
+;;
+;; 入力制限を緩くして comma が抜けていても受け容れる。
+;; Parser の都合で 4 桁固定。
 ;;
 ;; ### About `ARABIC漢数字`
 ;;
-;; 例: "1,234 億 345 万" "1,234億345万"
+;; 例: "1,234 億 345 万" "1,234億345万" "1234億345万" "234億3456万"
 ;;
 ;; - 文化庁の推奨する表記方法
-;; - 自然な形で parse できるよう Whitespace があった場合は skip される。
+;; - 自然な形で parse できるよう、数値と桁の間に Whitespace があった場合は skip される。
+;;   上述の定義では whitespace の仕様は記述なし。
+;; - `NUMBER4!` により comma が抜けていても受けつける。
 
 ;; ## Parser definitions
 
@@ -241,28 +250,40 @@
 (define-constant %number-positive ($. #[1-9]))
 (define-constant %comma-char ($. #\,))
 
+(define (%char->int c)
+  (- (char->integer c) (char->integer #\0)))
+
+(define (%chars->int cs)
+  (apply +
+         (map-with-index
+          (^ [i c] (* (%char->int c) (expt 10 i)))
+          (reverse cs))))
+
+(define-constant %number4!
+  ($lift (^ [n ns] (%chars->int (cons n ns)))
+         %number-positive
+         ($many %number 3 3)))
+
 (define-constant %comma-number4
-  (let* ([char->int (^c (- (char->integer c) (char->integer #\0)))]
-         [chars->int (^ [cs] (apply +
-                                    (map-with-index
-                                     (^ [i c] (* (char->int c) (expt 10 i)))
-                                     (reverse cs))))])
-    ($try-or
-     ($lift (^ [n ns] (chars->int (cons n ns)))
-            ($seq0 %number-positive %comma-char)
-            ($many %number 3 3))
-     ($lift (^ [ns] (chars->int ns))
-            ($many %number 1 3))
-     )))
+  ($try-or
+   ($lift (^ [n ns] (%chars->int (cons n ns)))
+          ($seq0 %number-positive %comma-char)
+          ($many %number 3 3))
+   ($lift (^ [ns] (%chars->int ns))
+          ($many %number 1 3))
+   ))
+
+(define-constant %number4*
+  ($try-or %number4! %comma-number4))
 
 (define-constant %arabic-block4
   ($try-or
    ($lift (^ [n u] (cons (* n u) u))
-          ($seq0 %comma-number4 %ws)
+          ($seq0 %number4* %ws)
           ($seq0 %block4-unit %ws)
           )
    ($lift (^n (cons n 1))
-          %comma-number4)))
+          %number4*)))
 
 (define ($less-arabic nu)
   ($let* ([n&u %arabic-block4]
