@@ -40,6 +40,11 @@
         (parse-kansuji-string "七千六百五十二無量大数五万三十二"))
   (test 372/1000 (parse-kansuji-string "三分七厘二毛"))
 
+  ;; check ignore unit
+  (test 1000000 (parse-kansuji-string "百万円"))
+  (test 1001000 (parse-kansuji-string "百万一千円"))
+  (test 1001500 (parse-kansuji-string "百万一千五百円"))
+
   (test-error (parse-kansuji-string "五万三十二千無量大数"))
   (test-error (parse-kansuji-string "七厘三分"))
   (test-error (parse-kansuji-string "八万七千八億"))
@@ -121,6 +126,4 @@
 
  )
 
-;; If you don't want `gosh' to exit with nonzero status even if
-;; the test fails, pass #f to :exit-on-failure.
 (test-end :exit-on-failure #t)
