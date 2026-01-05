@@ -54,8 +54,12 @@
 ;; ARABIC-BLOCK4 := COMMA-NUMBER4 BLOCK4-UNIT | COMMA-NUMBER4
 ;; ARABIC漢数字 := ARABIC-BLOCK4 ( LESS-ARABIC-BLOCK$ )*
 ;;
-;; NOTE: ARABIC漢数字
-;; その他、自然な形で parse できるよう Whitespace skip も入れること。冗長になるため省略した。
+;; ### About `ARABIC漢数字`
+;;
+;; 例: "1,234 億 345 万" "1,234億345万"
+;;
+;; - 文化庁の推奨する表記方法
+;; - 自然な形で parse できるよう Whitespace があった場合は skip される。
 
 ;; ## Parser definitions
 
@@ -102,7 +106,7 @@
 (define-constant %jnumber-plural ($basic/property 'plural))
 
 ;; ## NOTE:
-;; `standalone`: 単一文字だけで数を示す
+;; `standalone`: 単一文字だけで数を示すことができる (e.g. "十" "百")
 ;; `allow-singular`: "一" の前置を許可する。(NG: "一百" OK: "一千")
 
 ;; (UNIT PROPERTIES SYMBOLS)
@@ -452,7 +456,7 @@
     *units*)))
 
 ;; ## 文字列中にある漢数字と思われる文字の開始位置を検索するための正規表現
-;; <regexp>
+;; == <regexp>
 (define-constant kansuji-start
   ($ regexp-compile
      $ regexp-parse
@@ -464,13 +468,13 @@
 ;;;
 
 ;; ##
-;; - N: number
+;; - N : number
 ;; -> <void>
 (define (construct-kansuji* n :key (output-port (current-output-port)) :allow-other-keys _keys)
   (display (apply construct-kansuji-string n _keys) output-port))
 
 ;; ##
-;; - N: number
+;; - N : number
 ;; -> <string>
 (define (construct-kansuji n :optional (oport (current-output-port)))
   (construct-kansuji* n :output-port oport))
@@ -479,7 +483,8 @@
 ;; - N : <number>
 ;; - TYPE : <symbol> Control printing behavior
 ;;    - `漢数字` default:  (e.g. "一兆五千六百億", "千二百三十六")
-;;    - `arabic` : (e.g. 1,000 億 100 万)
+;;    - `arabic` : (e.g. "1,234 億 345 万")
+;; -> <string>
 (define (construct-kansuji-string n :key (type '漢数字))
   (ecase type
     [(漢数字)
@@ -495,15 +500,19 @@
   (peg-parse-port (build-paraser types) iport cont))
 
 ;; ##
-;; 漢数字は空白セパレータなしで単位が後続する場合がある。 (e.g. 百兆円)
-;; 故にデフォルトの挙動は後続の文字を単に無視する。厳格に制御したいときは CONT を使うこと。
-;; - CONT : `peg-parse-port` にそのまま渡される。
+;; 漢数字は空白セパレータなしで単位が後続する場合がある。 (e.g. "百万円")
+;; 故にデフォルトの挙動は parse 不可能な後続の文字は単に無視する。"百万円" の場合は
+; "円" が無視される。
+;; 厳格に制御したいときは CONT を使うこと。
+;; - CONT : [=Gauche;parser.peg:peg-parse-port]() にそのまま渡される。
+;; -> <number>
 (define (parse-kansuji :optional (iport (current-input-port))
                        (cont #f))
   (parse-kansuji-string* iport :cont cont))
 
 ;; ##
-;; - S: <string>
-;; - CONT : `peg-parse-port` にそのまま渡される。
+;; - S : <string>
+;; - CONT : [=Gauche;parser.peg:peg-parse-port]() にそのまま渡される。
+;; -> <number>
 (define (parse-kansuji-string s :optional (cont #f))
   (call-with-input-string s (cut parse-kansuji <> cont)))
